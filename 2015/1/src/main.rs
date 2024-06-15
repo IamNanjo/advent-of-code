@@ -2,6 +2,7 @@ use std::{fs, io::Write};
 
 struct Floor {
     current: i16,
+    basement_entered: u32,
     up: char,
     down: char,
 }
@@ -9,6 +10,7 @@ struct Floor {
 fn main() {
     let mut floor = Floor {
         current: 0,
+        basement_entered: 0,
         down: ')',
         up: '(',
     };
@@ -23,17 +25,40 @@ fn main() {
         .open("./output.txt")
         .expect("Open output file");
 
-    for character in input_file.chars() {
-        let change = get_output(&character, &mut floor);
+    read_input(&input_file, &mut output_file, &mut floor);
+
+    println!("Ended up on floor:\t {}", floor.current);
+
+    let basement_entered = if floor.basement_entered == 0 {
+        "never".to_string()
+    } else {
+        "".to_string()
+            + &(floor.basement_entered + 1).to_string()
+    };
+
+    println!("Basement entered:\t {}", basement_entered);
+}
+
+fn read_input(
+    input: &String,
+    output_file: &mut fs::File,
+    floor: &mut Floor,
+) {
+    for (i, character) in input.chars().enumerate() {
+        let change = get_output(&character, floor);
 
         if change.len() == 0 {
             continue;
         }
 
-        write_output(&mut output_file, &floor, change);
-    }
+        if floor.basement_entered == 0
+            && floor.current == -1
+        {
+            floor.basement_entered = i as u32;
+        }
 
-    println!("Ended up on floor {}", floor.current);
+        write_output(output_file, &floor, change);
+    }
 }
 
 fn get_output(
