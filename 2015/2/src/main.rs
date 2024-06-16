@@ -10,15 +10,20 @@ fn main() {
     let input_lines = read_file();
 
     let mut total_area: u32 = 0;
+    let mut total_ribbon_length: u32 = 0;
 
     for line in input_lines.iter() {
         let measurements = get_measurements(line);
 
         total_area +=
             calculate_needed_area(&measurements) as u32;
+
+        total_ribbon_length +=
+            calculate_needed_ribbon_length(&measurements)
+                as u32;
     }
 
-    println!("{}", total_area);
+    println!("Total area (in square feet):\t {}\nTotal ribbon (in feet):\t\t {}", total_area, total_ribbon_length);
 }
 
 fn read_file() -> Vec<String> {
@@ -63,4 +68,26 @@ fn calculate_needed_area(present: &Present) -> u16 {
         + 2 * sides.1
         + 2 * sides.2
         + smallest_side;
+}
+
+// lwh
+fn calculate_needed_ribbon_length(
+    present: &Present,
+) -> u16 {
+    let ribbon = if present.length >= present.width
+        && present.length >= present.height
+    {
+        2 * present.width + 2 * present.height
+    } else if present.width >= present.length
+        && present.width >= present.height
+    {
+        2 * present.length + 2 * present.height
+    } else {
+        2 * present.length + 2 * present.width
+    };
+
+    let bow =
+        present.length * present.width * present.height;
+
+    return ribbon + bow;
 }
