@@ -1,0 +1,14 @@
+.{
+    .name = .aoc_common,
+    .version = "0.0.0",
+    .fingerprint = 0x81a2a6b9d111e35a,
+    .minimum_zig_version = "0.14.0",
+    .dependencies = .{},
+
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "../LICENSE",
+    },
+}
